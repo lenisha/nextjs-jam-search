@@ -1,0 +1,1 @@
+# nextjs-jam-search
