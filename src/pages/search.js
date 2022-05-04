@@ -6,7 +6,12 @@ import { Input, Space } from 'antd'
 import { SettingOutlined } from '@ant-design/icons'
 
 const { Search } = Input;
-const onSearch = value => console.log(value);
+const onSearch = async value => {
+    const res = await fetch(`/api/search?q=${value}`)
+    const json = await res.json()
+    
+    console.log(json)
+}
 
 export default function Home() {
   return (
