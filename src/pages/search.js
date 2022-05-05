@@ -2,18 +2,20 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Search.module.css'
 import 'antd/dist/antd.css'
-import { Input, Space } from 'antd'
-import { SettingOutlined } from '@ant-design/icons'
+import { Input, Space, List } from 'antd'
+import React, { useState } from 'react';
 
 const { Search } = Input;
-const onSearch = async value => {
-    const res = await fetch(`/api/search?q=${value}`)
-    const json = await res.json()
-    
-    console.log(json)
-}
 
-export default function Home() {
+export default function Find() {  
+  const [ findings, setFindings ] = useState({ "count": 0, "results": [] })
+  const onSearch = async value => {
+      const res = await fetch(`/api/search?q=${value}`)
+      const json = await res.json();
+
+      setFindings({ "count": json.count || 0, "results": json.results });
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -31,6 +33,24 @@ export default function Home() {
             size="large"
             onSearch={onSearch}
             />
+        <List
+          className="search-results"
+          itemLayout="horizontal"
+          dataSource={findings.results}
+          
+          renderItem={item => (
+            <List.Item
+              actions={[<a key="list-loadmore-more">more</a>]}
+            >
+              <List.Item.Meta
+                avatar={<img src={item.picture} />}
+                title={<a href={"/api/document/"+item.name}>{item.name}</a>}
+                description={<><span><strong>Author:</strong>&nbsp;{item.author}</span>&nbsp;<span><strong>Created:</strong>&nbsp;{item.created}</span></>}
+              />
+                <div>content</div>
+            </List.Item>
+          )}
+        />    
     </main>
 
     <footer className={styles.footer}>
